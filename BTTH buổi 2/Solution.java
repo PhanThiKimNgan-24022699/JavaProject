@@ -1,5 +1,5 @@
-// Import your library
-// Do not change the name of the Solution class
+//Fibonacci 
+import java.util.Scanner;
 public class Solution {
 
     public static long fibonacci(long n) {
@@ -28,5 +28,18 @@ public class Solution {
         }
 
         return fn;
+    }
+    public static void main(String[] args) {
+        Solution sc_sol = new Solution();
+        //sử dụng scanner
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nhập n: ");
+        long n = sc.nextLong();
+
+        // Gọi hàm fibonacci
+        long result = sc_sol.fibonacci(n);
+        System.out.println("Fibonacci(" + n + ") = " + result);
+
+        sc.close();
     }
 } 
