@@ -1,39 +1,31 @@
-//Đảo ngược số nguyên
+//Tính tổng chữ số
 import java.util.Scanner;
 
 public class Solution {
-    public static int reverse(int n) {
-        int reversed = 0;
+    public static int sumOfDigits(int n) {
+        // Lấy giá trị tuyệt đối để xử lý cả số âm
+        n = Math.abs(n);
 
-        while (n != 0) {
-            int digit = n % 10;
+        int sum = 0;
 
-            // Kiểm tra trước khi nhân với 10 và cộng digit
-            if (reversed > Integer.MAX_VALUE / 10 || (reversed == Integer.MAX_VALUE / 10 && digit > 7)) {
-                return 0;
-            }
-            if (reversed < Integer.MIN_VALUE / 10 || (reversed == Integer.MIN_VALUE / 10 && digit < -8)) {
-                return 0;
-            }
-
-            reversed = reversed * 10 + digit;
+        while (n > 0) {
+            sum += n % 10;
             n /= 10;
         }
 
-        return reversed;
+        return sum;
     }
 
     public static void main(String[] args) {
-        // Tạo đối tượng Solution
         Solution sol = new Solution();
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Nhập số nguyên n: ");
         int n = sc.nextInt();
 
-        // Gọi phương thức reverse và in kết quả
-        int result = sol.reverse(n);
-        System.out.println("Số sau khi đảo ngược: " + result);
+        int result = sol.sumOfDigits(n);
+
+        System.out.println("Tổng các chữ số của " + n + " là: " + result);
 
         sc.close();
     }
