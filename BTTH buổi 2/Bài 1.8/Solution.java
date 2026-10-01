@@ -1,26 +1,24 @@
-//Đảo ngược số nguyên
+//Kiểm tra số Palindrome
 import java.util.Scanner;
 
 public class Solution {
-    public static int reverse(int n) {
+    public static boolean isPalindrome(int n) {
+        if (n < 0) {
+            return false;
+        }
+
+        int original = n;
         int reversed = 0;
 
+        // Đảo ngược số n
         while (n != 0) {
             int digit = n % 10;
-
-            // Kiểm tra trước khi nhân với 10 và cộng digit
-            if (reversed > Integer.MAX_VALUE / 10 || (reversed == Integer.MAX_VALUE / 10 && digit > 7)) {
-                return 0;
-            }
-            if (reversed < Integer.MIN_VALUE / 10 || (reversed == Integer.MIN_VALUE / 10 && digit < -8)) {
-                return 0;
-            }
-
             reversed = reversed * 10 + digit;
             n /= 10;
         }
 
-        return reversed;
+        // So sánh số sau khi đảo ngược với số ban đầu
+        return original == reversed;
     }
 
     public static void main(String[] args) {
@@ -28,12 +26,14 @@ public class Solution {
         Solution sol = new Solution();
 
         Scanner sc = new Scanner(System.in);
-        System.out.print("Nhập số nguyên n: ");
+        System.out.print("Nhập số nguyên n cần kiểm tra: ");
         int n = sc.nextInt();
 
-        // Gọi phương thức reverse và in kết quả
-        int result = sol.reverse(n);
-        System.out.println("Số sau khi đảo ngược: " + result);
+        if (sol.isPalindrome(n)) {
+            System.out.println(n + " là số Palindrome.");
+        } else {
+            System.out.println(n + " không phải là số Palindrome.");
+        }
 
         sc.close();
     }
