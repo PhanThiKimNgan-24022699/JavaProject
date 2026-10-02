@@ -76,7 +76,6 @@ public class Student {
     }
 
     public static void main(String[] args) {
-        System.out.println("=== KỊCH BẢN KIỂM THỬ BÀI 2.2: STUDENT ===\n");
         
         //Cách 1: Dùng constructor không tham số
         Student sv1 = new Student();
@@ -93,22 +92,20 @@ public class Student {
         //Cách 3: Dùng Copy constructor (sao chép thông tin từ sv2)
         Student sv3 = new Student(sv2);
 
-        // In thông tin 3 sinh viên ban đầu
         System.out.println("Thông tin 3 sinh viên vừa tạo");
         System.out.print("SV1: "); sv1.displayInfo();
         System.out.print("SV2: "); sv2.displayInfo();
         System.out.print("SV3 (Copy từ SV2): "); sv3.displayInfo();
 
         //Thử gán GPA < 0 và GPA > 4.0 để kiểm tra validation
-        System.out.println("\n--- Kiểm tra logic Validation GPA ---");
+        System.out.println("\n Kiểm tra logic Validation GPA ");
         System.out.println("1. Thử gán GPA = -1.5 cho SV1:");
         sv1.setGpa(-1.5);
 
         System.out.println("\n2. Thử gán GPA = 4.5 cho SV2:");
         sv2.setGpa(4.5);
 
-        // In lại thông tin sinh viên sau khi thử gán GPA sai
-        System.out.println("\n--- Thông tin sinh viên sau khi thử gán GPA sai ---");
+        System.out.println("\n Thông tin sinh viên sau khi thử gán GPA sai ");
         System.out.print("SV1: "); sv1.displayInfo();
         System.out.print("SV2: "); sv2.displayInfo();
     }
