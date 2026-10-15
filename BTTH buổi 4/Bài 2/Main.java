@@ -1,39 +1,42 @@
-class Animal {
-    public void makeSound() {
-        System.out.println("Animal sound");
+interface CanFly {
+    void fly();
+}
+
+interface CanSwim {
+    void swim();
+}
+
+interface CanFight {
+    void fight();
+}
+
+class ActionCharacter {
+    public void fight() {
+        System.out.println("Đấm bốc...");
     }
 }
 
-class Dog extends Animal {
+class Hero extends ActionCharacter implements CanFly, CanSwim, CanFight {
     @Override
-    public void makeSound() {
-        System.out.println("Woof woof");
+    public void fly() {
+        System.out.println("Hero is flying");
     }
-}
 
-class Cat extends Animal {
     @Override
-    public void makeSound() {
-        System.out.println("Meows meows");
+    public void swim() {
+        System.out.println("Hero is swimming");
     }
-}
 
-class Duck extends Animal {
-    //không ghi đè phương thức makeSound()
 }
 
 public class Main {
     public static void main(String[] args) {
-        // Tạo mảng Animal với 4 phần tử
-        Animal[] zoo = new Animal[4];
+        Hero hero = new Hero();
 
-        zoo[0] = new Dog();
-        zoo[1] = new Cat();
-        zoo[2] = new Duck();
-        zoo[3] = new Dog();
-        
-        for (Animal animal : zoo) {
-            animal.makeSound();
-        }
+        CanSwim swimmer = (CanSwim) hero;
+        swimmer.swim();
+
+        CanFight fighter = (CanFight) hero;
+        fighter.fight();
     }
 }
