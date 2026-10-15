@@ -1,79 +1,58 @@
-abstract class Product {
-    protected String name;
-    protected double basePrice;
+class ArrayUtils {
 
-    public Product(String name, double basePrice) {
-        this.name = name;
-        this.basePrice = basePrice;
+    public static <T> void swap(T[] array, int i, int j) {
+        T temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
     }
 
-    public abstract double getFinalPrice();
-    public abstract String getType();
-
-    @Override
-    public String toString() {
-        return name + " - " + getType() + " - " + getFinalPrice();
-    }
-}
-
-class Electronics extends Product {
-    private double insuranceFee;
-
-    public Electronics(String name, double basePrice, double insuranceFee) {
-        super(name, basePrice);
-        this.insuranceFee = insuranceFee;
-    }
-
-    @Override
-    public double getFinalPrice() {
-        //giá gốc + 10% VAT + phí bảo hành
-        return basePrice + (basePrice * 0.10) + insuranceFee;
-    }
-
-    @Override
-    public String getType() {
-        return "Electronics";
-    }
-}
-
-class Food extends Product {
-    private String expireDate; // Ngày hết hạn
-
-    public Food(String name, double basePrice, String expireDate) {
-        super(name, basePrice);
-        this.expireDate = expireDate;
-    }
-
-    @Override
-    public double getFinalPrice() {
-
-        if (name.equalsIgnoreCase("Bread")) {
-            return basePrice * 0.8; //giảm 20%
+    public static <T extends Comparable<T>> void sort(T[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 0; j < array.length - 1 - i; j++) {
+                if (array[j].compareTo(array[j + 1]) > 0) {
+                    swap(array, j, j + 1);
+                }
+            }
         }
-        return basePrice;
+    }
+}
+
+class Student implements Comparable<Student> {
+    String name;
+    double gpa;
+
+    public Student(String name, double gpa) {
+        this.name = name;
+        this.gpa = gpa;
     }
 
-    @Override
-    public String getType() {
-        return "Food";
+    public int compareTo(Student o) {
+        if (this.gpa > o.gpa) return 1;
+        if (this.gpa < o.gpa) return -1;
+        return 0;
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Product[] products = new Product[] {
-                new Electronics("Laptop", 1000, 50),
-                new Food("Milk", 30, "2025-03-15"),
-                new Food("Bread", 20, "2025-03-05")
-        };
-
-        double total = 0;
-
-        for (Product p : products) {
-            System.out.println(p);
-            total += p.getFinalPrice();
+        Integer[] numbers = {5, 1, 3, 2};
+        ArrayUtils.sort(numbers);
+        for (int num : numbers) {
+            System.out.print(num + " ");
         }
+        System.out.println("\n");
 
-        System.out.println("Total = " + total);
+        String[] words = {"Java", "C++", "Python"};
+        ArrayUtils.sort(words);
+        for (String word : words) {
+            System.out.print(word + " ");
+        }
+        System.out.println();
+
+        Student[] students = {
+                new Student("A", 3.2),
+                new Student("B", 2.5)
+        };
+        ArrayUtils.sort(students);
     }
 }
