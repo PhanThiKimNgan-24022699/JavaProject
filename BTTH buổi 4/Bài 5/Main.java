@@ -1,74 +1,42 @@
-abstract class Employee {
-    protected String name;
+class Pair<K, V> {
+    private K key;
+    private V value;
 
-    public Employee(String name) {
-        this.name = name;
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public abstract double calculateSalary();
-    public abstract String getType();
+    public K getKey() {
+        return key;
+    }
+
+    public void setKey(K key) {
+        this.key = key;
+    }
+
+    public V getValue() {
+        return value;
+    }
+
+    public void setValue(V value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {
-        return name + " - " + getType() + " - " + calculateSalary();
-    }
-}
-
-class FullTimeEmployee extends Employee {
-    private double baseSalary;
-    private double bonus;
-    private double penalty;
-
-    public FullTimeEmployee(String name, double baseSalary, double bonus, double penalty) {
-        super(name);
-        this.baseSalary = baseSalary;
-        this.bonus = bonus;
-        this.penalty = penalty;
-    }
-
-    @Override
-    public double calculateSalary() {
-        return baseSalary + bonus - penalty;
-    }
-
-    @Override
-    public String getType() {
-        return "Full-time";
-    }
-}
-
-class PartTimeEmployee extends Employee {
-    private double workingHours;
-    private double hourlyRate;
-
-    public PartTimeEmployee(String name, double workingHours, double hourlyRate) {
-        super(name);
-        this.workingHours = workingHours;
-        this.hourlyRate = hourlyRate;
-    }
-
-    @Override
-    public double calculateSalary() {
-        return workingHours * hourlyRate;
-    }
-
-    @Override
-    public String getType() {
-        return "Part-time";
+        return key + " - " + value;
     }
 }
 
 public class Main {
     public static void main(String[] args) {
+        Pair<String, Integer> p1 = new Pair<>("Tuổi", 20);
+        Pair<String, String> p2 = new Pair<>("Mã SV", "SV001");
+        Pair<Integer, Double> p3 = new Pair<>(105, 21.5);
 
-        Employee[] employees = new Employee[] {
-                new FullTimeEmployee("Nguyễn Văn A", 1500, 200, 50),
-                new PartTimeEmployee("Trần Thị B", 80, 10),
-                new FullTimeEmployee("Lê Văn C", 1400, 100, 50)
-        };
-
-        for (Employee emp : employees) {
-            System.out.println(emp);
-        }
+        System.out.println(p1);
+        System.out.println(p2);
+        System.out.println(p3);
     }
 }
