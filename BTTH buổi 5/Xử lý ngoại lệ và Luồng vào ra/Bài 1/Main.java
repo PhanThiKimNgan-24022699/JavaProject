@@ -1,48 +1,29 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class Main {
-    public static void useString() {
-        long startTime = System.currentTimeMillis();
-
-        String s = "";
-        for (int i = 0; i < 100000; i++) {
-            s = s + "Hello";
-        }
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("Thoi gian chay bang String: " + (endTime - startTime) + " ms");
-    }
-
-    public static void useStringBuffer() {
-        long startTime = System.currentTimeMillis();
-
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 100000; i++) {
-            sb.append("Hello");
-        }
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("Thoi gian chay bang StringBuffer: " + (endTime - startTime) + " ms");
-    }
-
-    public static void contentAnalysis(String text) {
-        int sentenceCount = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (c == '.' || c == '?' || c == '!') {
-                sentenceCount++;
-            }
-        }
-        System.out.println("So luong cau trong doan van: " + sentenceCount);
-
-        String replacedText = text.replace("Java", "Python");
-        System.out.println("Doan van sau khi thay the Java -> Python:\n" + replacedText);
-    }
-
     public static void main(String[] args) {
-        useString();
-        useStringBuffer();
+        Scanner sc = new Scanner(System.in);
 
-        String sampleText = "Java la mot ngon ngu lap trinh pho bien. Ban co thich Java khong? Hay hoc Java ngay hom nay!";
-        System.out.println("Van ban goc:\n" + sampleText + "\n");
-        contentAnalysis(sampleText);
+        try {
+            System.out.print("Nhap so a: ");
+            int a = sc.nextInt();
+
+            System.out.print("Nhap so b: ");
+            int b = sc.nextInt();
+
+            int result = a / b;
+            System.out.println("Ket qua a / b = " + result);
+
+        } catch (InputMismatchException e) {
+            System.out.println("Loi: Ban phai nhap vao mot so nguyen!");
+
+        } catch (ArithmeticException e) {
+            System.out.println("Loi: Khong the chia cho 0!");
+
+        } finally {
+            System.out.println("Program finished.");
+            sc.close();
+        }
     }
 }
