@@ -1,58 +1,105 @@
-class ArrayUtils {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static <T> void swap(T[] array, int i, int j) {
-        T temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+abstract class FileSystemItem {
+    protected String name;
+    protected Folder parent;
+
+    public FileSystemItem(String name) {
+        this.name = name;
     }
 
-    public static <T extends Comparable<T>> void sort(T[] array) {
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 0; j < array.length - 1 - i; j++) {
-                if (array[j].compareTo(array[j + 1]) > 0) {
-                    swap(array, j, j + 1);
-                }
-            }
+    public String getName() {
+        return name;
+    }
+
+    protected void setParent(Folder parent) {
+        this.parent = parent;
+    }
+
+    public String getPath() {
+        if (parent == null) {
+            return "/" + name;
         }
+        return parent.getPath() + "/" + name;
+    }
+
+    public abstract void print(String indent);
+}
+
+class FileItem extends FileSystemItem {
+    private int size;
+
+    public FileItem(String name, int size) {
+        super(name);
+        this.size = size;
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "File: " + name + " (" + size + "KB)");
     }
 }
 
-class Student implements Comparable<Student> {
-    String name;
-    double gpa;
+class Shortcut extends FileSystemItem {
+    private FileSystemItem target;
 
-    public Student(String name, double gpa) {
-        this.name = name;
-        this.gpa = gpa;
+    public Shortcut(String name, FileSystemItem target) {
+        super(name);
+        this.target = target;
     }
 
-    public int compareTo(Student o) {
-        if (this.gpa > o.gpa) return 1;
-        if (this.gpa < o.gpa) return -1;
-        return 0;
+    @Override
+    public void print(String indent) {
+        String targetPath = (target != null) ? target.getPath() : "null";
+        System.out.println(indent + "Shortcut: " + name + " -> " + targetPath);
+    }
+}
+
+class Folder extends FileSystemItem {
+    private List<FileSystemItem> children = new ArrayList<>();
+
+    public Folder(String name) {
+        super(name);
+    }
+
+    public void add(FileSystemItem item) {
+        item.setParent(this);
+        children.add(item);
+    }
+
+    public void remove(FileSystemItem item) {
+        item.setParent(null);
+        children.remove(item);
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "Folder: " + name);
+        for (FileSystemItem item : children) {
+            item.print(indent + "  "); 
+        }
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] numbers = {5, 1, 3, 2};
-        ArrayUtils.sort(numbers);
-        for (int num : numbers) {
-            System.out.print(num + " ");
-        }
-        System.out.println("\n");
+        Folder root = new Folder("root");
+        Folder docs = new Folder("docs");
 
-        String[] words = {"Java", "C++", "Python"};
-        ArrayUtils.sort(words);
-        for (String word : words) {
-            System.out.print(word + " ");
-        }
-        System.out.println();
+        FileItem fileA = new FileItem("a.txt", 12);
+        FileItem fileB = new FileItem("b.txt", 8);
+        FileItem readme = new FileItem("readme.md", 4);
 
-        Student[] students = {
-                new Student("A", 3.2),
-                new Student("B", 2.5)
-        };
-        ArrayUtils.sort(students);
+        Shortcut shortcutA = new Shortcut("a-shortcut", fileA);
+
+        docs.add(fileA);
+        docs.add(fileB);
+        docs.add(shortcutA);
+
+        root.add(docs);
+        root.add(readme);
+
+        root.print("");
     }
 }
