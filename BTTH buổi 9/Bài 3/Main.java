@@ -1,69 +1,100 @@
-interface IWorkable {
-    void work();
+interface Button {
+    void render();
 }
 
-abstract class Employee implements IWorkable {
-    String id, name;
-    double baseSalary;
-
-    public Employee(String id, String name, double baseSalary) {
-        this.id = id;
-        this.name = name;
-        this.baseSalary = baseSalary;
-    }
-
-    public abstract double calculatePay();
+interface Checkbox {
+    void render();
 }
 
-class OfficeWorker extends Employee {
-    public OfficeWorker(String id, String name, double baseSalary) {
-        super(id, name, baseSalary);
-    }
-
-    public double calculatePay() {
-        return baseSalary;
-    }
-
-    public void work() {
-        System.out.println("Soạn thảo văn bản");
+class WindowsButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Hiển thị nút bấm (Button) phong cách Windows.");
     }
 }
 
-class Technician extends Employee {
-    int overtimeHours;
+class WindowsCheckbox implements Checkbox {
+    @Override
+    public void render() {
+        System.out.println("Hiển thị ô đánh dấu (Checkbox) phong cách Windows.");
+    }
+}
 
-    public Technician(String id, String name, double baseSalary, int overtimeHours) {
-        super(id, name, baseSalary);
-        this.overtimeHours = overtimeHours;
+class MacButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Hiển thị nút bấm (Button) phong cách Mac.");
+    }
+}
+
+class MacCheckbox implements Checkbox {
+    @Override
+    public void render() {
+        System.out.println("Hiển thị ô đánh dấu (Checkbox) phong cách Mac.");
+    }
+}
+
+interface UIFactory {
+    Button createButton();
+    Checkbox createCheckbox();
+}
+
+class WindowsFactory implements UIFactory {
+    @Override
+    public Button createButton() {
+        return new WindowsButton();
     }
 
-    public double calculatePay() {
-        return baseSalary + overtimeHours * 20000;
+    @Override
+    public Checkbox createCheckbox() {
+        return new WindowsCheckbox();
+    }
+}
+
+class MacFactory implements UIFactory {
+    @Override
+    public Button createButton() {
+        return new MacButton();
     }
 
-    public void work() {
-        System.out.println("Lắp đặt thiết bị");
+    @Override
+    public Checkbox createCheckbox() {
+        return new MacCheckbox();
+    }
+}
+
+class Application {
+    private Button button;
+    private Checkbox checkbox;
+
+    public Application(UIFactory factory) {
+        button = factory.createButton();
+        checkbox = factory.createCheckbox();
+    }
+
+    public void renderUI() {
+        button.render();
+        checkbox.render();
     }
 }
 
 public class Main {
-    public static void main(String[] args) {
-        Employee[] employees = {
-                new OfficeWorker("E01", "NguyenVanA", 5000000),
-                new Technician("E02", "TranThiB", 5000000, 30),
-                new OfficeWorker("E03", "LeVanC", 4500000)
-        };
-
-        double totalPay = 0;
-
-        for (Employee emp : employees) {
-            double pay = emp.calculatePay();
-            totalPay += pay;
-
-            System.out.println(emp.name + " - Pay: " + pay);
-            emp.work();
-            System.out.println();
+    private static UIFactory configureFactory(String osConfig) {
+        if (osConfig.equalsIgnoreCase("win")) {
+            return new WindowsFactory();
+        } else if (osConfig.equalsIgnoreCase("mac")) {
+            return new MacFactory();
+        } else {
+            throw new IllegalArgumentException("Hệ điều hành không được hỗ trợ: " + osConfig);
         }
-        System.out.printf("Total Pay = %.1f\n", totalPay);
+    }
+
+    public static void main(String[] args) {
+        String config = (args.length > 0) ? args[0] : "mac";
+        System.out.println(" Cấu hình hệ thống: " + config.toUpperCase() );
+        UIFactory factory = configureFactory(config);
+        
+        Application app = new Application(factory);
+        app.renderUI();
     }
 }

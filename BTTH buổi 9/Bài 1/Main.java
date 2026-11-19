@@ -1,55 +1,65 @@
-abstract class Shape {
-    protected int x, y;
+class AppConfig {
+    private static volatile AppConfig instance;
 
-    public Shape(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    public abstract void draw();
-    public abstract void erase();
+    private String appName;
+    private String version;
+    private String logLevel;
 
-    public void moveTo(int newX, int newY) {
-        erase();           
-        this.x = newX;    
-        this.y = newY;
-        draw();       
+    private AppConfig() {
+        this.appName = "UET Student Portal";
+        this.version = "1.0.0";
+        this.logLevel = "INFO";
     }
 
-class Circle extends Shape {
-    public Circle(int x, int y) {
-        super(x, y);
+    public static AppConfig getInstance() {
+        if (instance == null) {
+            synchronized (AppConfig.class) {
+                if (instance == null) {
+                    instance = new AppConfig();
+                }
+            }
+        }
+        return instance;
     }
 
-    @Override
-    public void draw() {
-        System.out.println("Vẽ hình tròn tại (" + x + ", " + y + ")");
+    public String getAppName() {
+        return appName;
     }
 
-    @Override
-    public void erase() {
-        System.out.println("Xóa hình tròn tại (" + x + ", " + y + ")");
-    }
-}
-
-class Square extends Shape {
-    public Square(int x, int y) {
-        super(x, y);
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
-    @Override
-    public void draw() {
-        System.out.println("Vẽ hình vuông tại (" + x + ", " + y + ")");
+    public String getVersion() {
+        return version;
     }
 
-    @Override
-    public void erase() {
-        System.out.println("Xóa hình vuông tại (" + x + ", " + y + ")");
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Circle circle = new Circle(10, 10);
-        circle.moveTo(20, 20);
+        Thread thread1 = new Thread(() -> {
+            AppConfig config1 = AppConfig.getInstance();
+            System.out.println("Luồng 1 - HashCode: " + config1.hashCode() + " | App: " + config1.getAppName());
+        });
+
+        Thread thread2 = new Thread(() -> {
+            AppConfig config2 = AppConfig.getInstance();
+            System.out.println("Luồng 2 - HashCode: " + config2.hashCode() + " | App: " + config2.getAppName());
+        });
+
+        thread1.start();
+        thread2.start();
     }
 }
