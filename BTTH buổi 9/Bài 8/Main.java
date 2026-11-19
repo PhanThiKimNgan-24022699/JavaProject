@@ -1,74 +1,67 @@
-interface IWifiConnectable {
-    void connectWifi();
-}
+class Report {
+    private String title;
+    private String content;
 
-abstract class Device {
-    String id;
-    String name;
-
-    public Device(String id, String name) {
-        this.id = id;
-        this.name = name;
+    public Report(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
-    public void turnOff() {
-        System.out.println(name + " turned off");
+    public String getTitle() {
+        return title;
     }
-}
 
-class Light extends Device {
-    public Light(String id, String name) {
-        super(id, name);
+    public String getContent() {
+        return content;
     }
 }
 
-class AC extends Device implements IWifiConnectable {
-    public AC(String id, String name) {
-        super(id, name);
-    }
+interface ReportFormatter {
+    String format(Report report);
+}
 
-    public void connectWifi() {
-        System.out.println(name + " connected to wifi");
+class JsonFormatter implements ReportFormatter {
+    @Override
+    public String format(Report report) {
+        return "{\n" +
+               "  \"title\": \"" + report.getTitle() + "\",\n" +
+               "  \"content\": \"" + report.getContent() + "\"\n" +
+               "}";
     }
 }
 
-class SmartSpeaker extends Device implements IWifiConnectable {
-    public SmartSpeaker(String id, String name) {
-        super(id, name);
-    }
-
-    public void connectWifi() {
-        System.out.println(name + " connected to wifi");
+class XmlFormatter implements ReportFormatter {
+    @Override
+    public String format(Report report) {
+        return "<report>\n" +
+               "  <title>" + report.getTitle() + "</title>\n" +
+               "  <content>" + report.getContent() + "</content>\n" +
+               "</report>";
     }
 }
 
-class Curtain extends Device {
-    public Curtain(String id, String name) {
-        super(id, name);
+class ReportService {
+    private ReportFormatter formatter;
+
+    public ReportService(ReportFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    public String export(Report data) {
+        return formatter.format(data);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Device[] devices = {
-                new Light("01", "LivingRoomLight"),
-                new AC("02", "BedroomAC"),
-                new SmartSpeaker("03", "SmartSpeaker"),
-                new Curtain("04", "WindowCurtain")
-        };
+        Report report = new Report("Báo cáo thực hành buổi 9", "Áp dụng nguyên lý SOLID và Design Pattern.");
 
-        System.out.println("Turn Off All Devices:");
-        for (Device d : devices) {
-            d.turnOff();
-        }
+        ReportService jsonService = new ReportService(new JsonFormatter());
+        System.out.println("ĐỊNH DẠNG JSON");
+        System.out.println(jsonService.export(report));
 
-        System.out.println();
-
-        System.out.println("Setup Wifi:");
-        for (Device d : devices) {
-            if (d instanceof IWifiConnectable) {
-                ((IWifiConnectable) d).connectWifi();
-            }
-        }
+        ReportService xmlService = new ReportService(new XmlFormatter());
+        System.out.println("\nĐỊNH DẠNG XML");
+        System.out.println(xmlService.export(report));
     }
 }

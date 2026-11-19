@@ -1,95 +1,73 @@
-interface Operation<T> {
-    T execute(T a, T b);
+interface Notifier {
+    void send(String msg);
 }
 
-class Student {
-    String id;
-    String name;
-    double gpa;
+class EmailNotifier implements Notifier {
+    private String email;
 
-    public Student(String id, String name, double gpa) {
-        this.id = id;
-        this.name = name;
-        this.gpa = gpa;
+    public EmailNotifier(String email) {
+        this.email = email;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public double getGpa() {
-        return gpa;
-    }
-
-    public String toString() {
-        return id + " " + name + " " + gpa;
+    @Override
+    public void send(String msg) {
+        System.out.println("[EMAIL] Gửi tới " + email + ": " + msg);
     }
 }
 
-class StudentList {
-    private Student[] items;
-    private int size;
+abstract class NotifierDecorator implements Notifier {
+    protected Notifier wrappedNotifier;
 
-    public StudentList(Student[] initialItems) {
-        this.items = initialItems;
-        this.size = initialItems.length;
+    public NotifierDecorator(Notifier notifier) {
+        this.wrappedNotifier = notifier;
     }
 
-    public void removeIf(java.util.function.Predicate<Student> predicate) {
-        int newSize = 0;
-        for (int i = 0; i < size; i++) {
-            if (!predicate.test(items[i])) {
-                items[newSize++] = items[i];
-            }
-        }
-        size = newSize;
-    }
-
-    public void sort(java.util.Comparator<Student> comparator) {
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - 1 - i; j++) {
-                if (comparator.compare(items[j], items[j + 1]) > 0) {
-                    Student temp = items[j];
-                    items[j] = items[j + 1];
-                    items[j + 1] = temp;
-                }
-            }
+    @Override
+    public void send(String msg) {
+        if (wrappedNotifier != null) {
+            wrappedNotifier.send(msg);
         }
     }
+}
 
-    public void printAll() {
-        for (int i = 0; i < size; i++) {
-            System.out.println(items[i]);
-        }
+class SMSNotifier extends NotifierDecorator {
+    private String phoneNumber;
+
+    public SMSNotifier(Notifier notifier, String phoneNumber) {
+        super(notifier);
+        this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public void send(String msg) {
+        super.send(msg);
+        System.out.println("[SMS] Gửi tới số " + phoneNumber + ": " + msg);
+    }
+}
+
+class FacebookNotifier extends NotifierDecorator {
+    private String facebookId;
+
+    public FacebookNotifier(Notifier notifier, String facebookId) {
+        super(notifier);
+        this.facebookId = facebookId;
+    }
+
+    @Override
+    public void send(String msg) {
+        super.send(msg);
+        System.out.println("[FACEBOOK] Gửi tới tài khoản " + facebookId + ": " + msg);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Student[] studentArray = {
-                new Student("S01", "NguyenVanA", 7.5),
-                new Student("S02", "TranThiB", 4.5),
-                new Student("S03", "LeVanC", 8.0),
-                new Student("S04", "PhamVanD", 5.0)
-        };
+        Notifier notifier = new EmailNotifier("sinhvien@uet.vnu.edu.vn");
 
-        StudentList students = new StudentList(studentArray);
+        notifier = new FacebookNotifier(notifier, "fb.com/sinhvien.uet");
+        notifier = new SMSNotifier(notifier, "0987654321");
 
-        students.removeIf(student -> student.getGpa() < 5.0);
-
-        System.out.println("After removing GPA < 5.0:");
-        students.printAll();
-        System.out.println();
-
-        students.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
-
-        System.out.println("After sorting by name:");
-        students.printAll();
-
-        //Lambda
-        Operation<Double> add = (a, b) -> a + b;
-        Operation<Double> subtract = (a, b) -> a - b;
-        Operation<Double> multiply = (a, b) -> a * b;
-        Operation<Double> divide = (a, b) -> b != 0 ? a / b : 0.0;
+        System.out.println("Bắt đầu gửi thông báo đa kênh");
+        notifier.send("Lịch thi cuối kỳ môn Lập trình hướng đối tượng đã được cập nhật!");
     }
 }
