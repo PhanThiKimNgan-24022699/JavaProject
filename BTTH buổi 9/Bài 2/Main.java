@@ -1,42 +1,50 @@
-interface CanFly {
-    void fly();
+interface Notification {
+    void send(String msg);
 }
 
-interface CanSwim {
-    void swim();
-}
-
-interface CanFight {
-    void fight();
-}
-
-class ActionCharacter {
-    public void fight() {
-        System.out.println("Đấm bốc...");
-    }
-}
-
-class Hero extends ActionCharacter implements CanFly, CanSwim, CanFight {
+class EmailNotification implements Notification {
     @Override
-    public void fly() {
-        System.out.println("Hero is flying");
+    public void send(String msg) {
+        System.out.println("[EMAIL] Đang gửi email với nội dung: " + msg);
     }
+}
 
+class SmsNotification implements Notification {
     @Override
-    public void swim() {
-        System.out.println("Hero is swimming");
+    public void send(String msg) {
+        System.out.println("[SMS] Đang gửi tin nhắn với nội dung: " + msg);
+    }
+}
+
+abstract class NotificationApp {
+    public void notifyUser(String msg) {
+        Notification notification = createNotification();
+        notification.send(msg);
     }
 
+    protected abstract Notification createNotification();
+}
+
+class EmailApp extends NotificationApp {
+    @Override
+    protected Notification createNotification() {
+        return new EmailNotification();
+    }
+}
+
+class SmsApp extends NotificationApp {
+    @Override
+    protected Notification createNotification() {
+        return new SmsNotification();
+    }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Hero hero = new Hero();
+        NotificationApp app1 = new EmailApp();
+        app1.notifyUser("Chào mừng bạn đến với hệ thống UET!");
 
-        CanSwim swimmer = (CanSwim) hero;
-        swimmer.swim();
-
-        CanFight fighter = (CanFight) hero;
-        fighter.fight();
+        NotificationApp app2 = new SmsApp();
+        app2.notifyUser("Mã xác thực OTP của bạn là: 839201");
     }
 }
